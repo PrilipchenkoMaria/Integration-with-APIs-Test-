@@ -2,6 +2,8 @@ const bodyParser = require("body-parser");
 const express = require("express");
 require("express-async-errors");
 
+require("./services/mongoose");
+
 const app = express();
 
 app.use(bodyParser.json());
