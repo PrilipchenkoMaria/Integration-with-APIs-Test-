@@ -8,6 +8,6 @@ mongoose.connection
   process.exit(-1);
 }).on("open", () => console.info("MongoDB connected"));
 
-mongoose.connect(dbConfig.url, { useUnifiedTopology: true } );
+mongoose.connect(dbConfig.url, { useUnifiedTopology: true, useNewUrlParser: true } );
 
 module.exports = mongoose;
