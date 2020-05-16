@@ -4,10 +4,11 @@ const { stripeSK } = require("./config");
 const stripe = require("stripe")(stripeSK);
 require("express-async-errors");
 require("./services/mongoose");
-
+const auth = require("./controllers/auth");
 const app = express();
 app.use(bodyParser.json());
 
+app.use("/api/auth/", auth);
 app.use("/api/connect/oauth/", async (req, res) => {
   const { code } = req.query;
 

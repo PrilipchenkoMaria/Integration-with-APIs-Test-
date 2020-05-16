@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { dbConfig } = require("../config");
-//require("../models");
+require("../models");
 
 mongoose.connection
   .on("error", (err) => {
