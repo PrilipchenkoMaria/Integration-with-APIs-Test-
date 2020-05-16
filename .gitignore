@@ -11,6 +11,7 @@
 /coverage
 
 # config
+/client/src/config.js
 /server/config.js
 /config.js
 .env

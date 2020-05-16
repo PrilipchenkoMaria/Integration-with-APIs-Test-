@@ -5,6 +5,7 @@ import { stripeSignInValidation } from "../store/actions";
 import { Link } from "react-router-dom";
 import { AppStore } from "../store";
 import { AuthStore } from "../store/reducers/auth";
+import { stripeConnect } from "../config";
 
 interface StripeConnectionProps extends AuthStore {
   stripeSignInValidation: (query: string) => any;
@@ -31,7 +32,6 @@ const StripeConnectionResponse = connect((state: AppStore) => ({
   }
 
   response() {
-    const stripeConnect = process.env.REACT_APP_CONNECT_URI;
     const { stripeErrorMessage } = this.props;
     const variant = stripeErrorMessage ? "warning" : "success";
     const message = stripeErrorMessage

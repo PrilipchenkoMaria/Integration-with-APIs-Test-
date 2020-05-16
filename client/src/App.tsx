@@ -1,5 +1,6 @@
 import React from "react";
-import { Route, BrowserRouter, Switch } from "react-router-dom";
+import { Route, Router, Switch } from "react-router-dom";
+import history from "./history";
 import CreateProduct from "./components/CreateProduct";
 import Products from "./components/Products";
 import Header from "./components/Header";
@@ -9,7 +10,7 @@ import StripeConnectionResponse from "./components/StripeConnectionResponse";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router history={history}>
       <div className="App">
         <Header/>
         <Switch>
@@ -20,7 +21,7 @@ function App() {
           <Route path="/" component={Products}/>
         </Switch>
       </div>
-    </BrowserRouter>
+    </Router>
   );
 }
 
