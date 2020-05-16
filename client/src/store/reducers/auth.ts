@@ -2,10 +2,10 @@ import {
   STRIPE_SIGN_IN_SUCCESS,
   STRIPE_SIGN_IN_FAIL,
   STRIPE_SIGN_IN_VALIDATION,
-  SIGN_IN_SUCCESS,
+  AUTH_SUCCESS,
   SIGN_UP_FAIL,
   SIGN_UP,
-  SIGN_OUT,
+  SIGN_OUT, SIGN_IN_FAIL, SIGN_IN,
 } from "../actionTypes";
 
 const initialState = {
@@ -14,6 +14,8 @@ const initialState = {
   stripeErrorMessage: null,
   signUpIsFetching: false,
   signUpErrorMessage: null,
+  signInIsFetching: false,
+  signInErrorMessage: null,
   token: localStorage.getItem("token"),
 };
 
@@ -54,7 +56,13 @@ const auth = (state = initialState, action: Action) => {
         signUpIsFetching: true,
       };
     }
-    case SIGN_IN_SUCCESS: {
+    case SIGN_IN: {
+      return {
+        ...state,
+        signInIsFetching: true,
+      };
+    }
+    case AUTH_SUCCESS: {
       return {
         ...state,
         signUpIsFetching: false,
@@ -65,6 +73,13 @@ const auth = (state = initialState, action: Action) => {
         ...state,
         signUpIsFetching: false,
         signUpErrorMessage: action.payload.message,
+      };
+    }
+    case SIGN_IN_FAIL: {
+      return {
+        ...state,
+        signInIsFetching: false,
+        signInErrorMessage: action.payload.message,
       };
     }
     case SIGN_OUT: {
@@ -87,8 +102,9 @@ export interface AuthStore {
   stripeErrorMessage?: string;
   signUpIsFetching: boolean,
   signUpErrorMessage?: string,
+  signInIsFetching: boolean,
+  signInErrorMessage?: string,
   token?: string,
-  isAuthenticated: boolean,
 }
 
 export default auth;

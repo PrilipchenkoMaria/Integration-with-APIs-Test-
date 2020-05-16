@@ -4,7 +4,9 @@ import {
   STRIPE_SIGN_IN_VALIDATION,
   SIGN_UP,
   SIGN_UP_FAIL,
-  SIGN_IN_SUCCESS,
+  AUTH_SUCCESS,
+  SIGN_IN,
+  SIGN_IN_FAIL,
 } from "./actionTypes";
 import { call, put, takeEvery } from "redux-saga/effects";
 import history from "../history";
@@ -35,25 +37,35 @@ function* fetchStripeUserID(action: Action) {
   }
 }
 
-function* fetchSignUp(action: Action) {
+function* fetchAuth(action: Action) {
   const user = action.payload;
   const userStringify = JSON.stringify(user);
-  const signUpResponse = yield call(() => fetch(`/api/auth/sign-up`, {
+  let uri:string = "", failType:string = "";
+  if (action.type === "SIGN_UP") {
+    uri = "/api/auth/sign-up";
+    failType = SIGN_UP_FAIL;
+  }
+  if (action.type === "SIGN_IN") {
+    uri = "/api/auth/sign-in";
+    failType = SIGN_IN_FAIL;
+  }
+  const authResponse = yield call(() => fetch(uri, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: userStringify,
   })
     .then((res) => res.json()));
-  if (signUpResponse.token) {
-    localStorage.setItem("token", signUpResponse.token);
+  if (authResponse.token) {
+    localStorage.setItem("token", authResponse.token);
     history.push("/");
-    yield put({ type: SIGN_IN_SUCCESS, payload: { token: signUpResponse.token } });
-  } else if (signUpResponse.message) {
-    yield put({ type: SIGN_UP_FAIL, payload: { message: signUpResponse.message } });
+    yield put({ type: AUTH_SUCCESS, payload: { token: authResponse.token } });
+  } else if (authResponse.message) {
+    yield put({ type: failType, payload: { message: authResponse.message } });
   }
 }
 
 export default function* rootSaga() {
   yield takeEvery(STRIPE_SIGN_IN_VALIDATION, fetchStripeUserID);
-  yield takeEvery(SIGN_UP, fetchSignUp);
+  yield takeEvery(SIGN_UP, fetchAuth);
+  yield takeEvery(SIGN_IN, fetchAuth);
 }
