@@ -6,7 +6,11 @@ import {
   SIGN_UP_FAIL,
   AUTH_SUCCESS,
   SIGN_IN,
-  SIGN_IN_FAIL, TOKEN_VERIFICATION,
+  SIGN_IN_FAIL,
+  TOKEN_VERIFICATION,
+  GET_PRODUCTS,
+  GET_PRODUCTS_FAIL,
+  GET_PRODUCTS_SUCCESS,
 } from "./actionTypes";
 import { call, put, takeEvery } from "redux-saga/effects";
 import history from "../history";
@@ -82,9 +86,18 @@ function* tokenVerification() {
   }
 }
 
+function* fetchProducts() {
+  const products = yield call(() => fetch("/api/product/all")
+    .then((res) => res.json()));
+  if (products) {
+    yield put({ type: GET_PRODUCTS_SUCCESS, payload: { products } });
+  } else yield put({ type: GET_PRODUCTS_FAIL });
+}
+
 export default function* rootSaga() {
   yield takeEvery(STRIPE_SIGN_IN_VALIDATION, fetchStripeUserID);
   yield takeEvery(SIGN_UP, fetchAuth);
   yield takeEvery(SIGN_IN, fetchAuth);
   yield takeEvery(TOKEN_VERIFICATION, tokenVerification);
+  yield takeEvery(GET_PRODUCTS, fetchProducts);
 }

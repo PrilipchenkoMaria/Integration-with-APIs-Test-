@@ -4,6 +4,7 @@ import {
   SIGN_IN,
   STRIPE_SIGN_IN_VALIDATION,
   TOKEN_VERIFICATION,
+  GET_PRODUCTS,
 } from "./actionTypes";
 import history from "../history";
 
@@ -31,4 +32,8 @@ export const signOutUser = () => {
 
 export const isAuthenticated = () => ({
   type: TOKEN_VERIFICATION,
+});
+
+export const getProducts = () => ({
+  type: GET_PRODUCTS,
 });
