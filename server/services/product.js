@@ -2,6 +2,7 @@ const Product = require("mongoose").model("Product");
 
 module.exports = {
   createProduct,
+  findAllProducts,
 };
 
 async function createProduct(name, amount, stripeId) {
@@ -10,4 +11,8 @@ async function createProduct(name, amount, stripeId) {
     amount,
     stripeId,
   });
+}
+
+async function findAllProducts() {
+  return Product.find({});
 }

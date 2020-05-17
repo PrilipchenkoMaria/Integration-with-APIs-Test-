@@ -104,7 +104,7 @@ describe("Product", () => {
     ],
 
   ].forEach(([caseName, payload, expectCode]) => it(caseName, () => app
-    .request("POST", "/api/product/createProduct")
+    .request("POST", "/api/product/create-product")
     .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYzFiNTM2ZjM0MWFhMzIwZDYyNDN" +
       "lYiIsImlhdCI6MTU4OTc1MzE0M30.RhcBnWya5HgMhzvlTtSDaTBvCrCXKs3kCeZO-iDxeJo")
     .send(payload)
@@ -112,4 +112,9 @@ describe("Product", () => {
   after(async () => {
     await Product.deleteOne({ name: "testtest" });
   });
+  it("GET /api/product/all", () => app
+    .request("GET", "/api/product/all")
+    .expect(200)
+    .expect("Content-Type", /json/)
+    .then((res) => res.body.should.be.an("array")));
 });

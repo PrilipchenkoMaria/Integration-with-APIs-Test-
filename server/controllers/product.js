@@ -3,9 +3,13 @@ const {
   getStripeIdById,
   getIdByToken,
 } = require("../services/user");
-const { createProduct } = require("../services/product");
+const {
+  createProduct,
+  findAllProducts,
+} = require("../services/product");
 
-router.post("/createProduct", addProduct);
+router.post("/create-product", addProduct);
+router.get("/all", getProducts);
 
 async function addProduct(req, res) {
   const authString = req.headers.authorization;
@@ -17,6 +21,11 @@ async function addProduct(req, res) {
   const stripeId = await getStripeIdById(userId);
   const newProduct = await createProduct(name, amount, stripeId);
   if (newProduct) return res.sendStatus(201);
+}
+
+async function getProducts(req, res) {
+  const products = await findAllProducts();
+  return res.status(200).json(products);
 }
 
 module.exports = router;
