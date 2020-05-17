@@ -19,8 +19,7 @@ interface Action {
 
 function* fetchStripeUserID(action: Action) {
   const query = action.payload;
-  const token = "local storage";
-
+  const { token } = localStorage;
   const verificationResponse = yield call(() => fetch(`/api/connect/oauth/${query}`, {
     method: "GET",
     headers: {

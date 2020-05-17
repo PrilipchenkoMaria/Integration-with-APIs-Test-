@@ -8,7 +8,8 @@ module.exports = {
   checkUserByEmail,
   signToken,
   verifyUser,
-  isTokenValid,
+  getIdByToken,
+  saveStripeId,
 };
 
 async function checkUserByEmail(email) {
@@ -35,6 +36,10 @@ async function verifyUser(email, password) {
   return isPassCorrect ? user._id : false;
 }
 
+async function saveStripeId(stripe_user_id, userId) {
+  return await User.updateOne({ _id: userId }, { stripe_account: stripe_user_id });
+}
+
 async function signToken(id) {
   return jwt.sign({ id }, secret);
 }
@@ -43,7 +48,7 @@ async function checkPass(password, hash) {
   return bcrypt.compare(password, hash);
 }
 
-async function isTokenValid(authString) {
+async function getIdByToken(authString) {
   const token = authString && authString.substring(7);
   return await decodeToken(token);
 }

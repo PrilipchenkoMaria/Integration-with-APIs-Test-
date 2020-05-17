@@ -4,7 +4,7 @@ const {
   signToken,
   createUser,
   verifyUser,
-  isTokenValid
+  getIdByToken,
 } = require("../services/auth");
 
 router.post("/sign-up", signUp);
@@ -60,9 +60,9 @@ async function signIn(req, res) {
 
 async function verifyToken(req, res) {
   const authString = req.headers.authorization;
-  const userId = await isTokenValid(authString);
+  const userId = await getIdByToken(authString);
   if (!userId) {
-    return res.sendStatus(401)
+    return res.sendStatus(401);
   }
   return res.sendStatus(200);
 }
