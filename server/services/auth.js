@@ -8,6 +8,7 @@ module.exports = {
   checkUserByEmail,
   signToken,
   verifyUser,
+  isTokenValid,
 };
 
 async function checkUserByEmail(email) {
@@ -27,7 +28,7 @@ async function hashPass(password) {
   return bcrypt.hash(password, 11);
 }
 
-async function verifyUser( email, password) {
+async function verifyUser(email, password) {
   const user = await User.findOne({ email });
   if (!user) return false;
   const isPassCorrect = await checkPass(password, user.password);
@@ -42,3 +43,12 @@ async function checkPass(password, hash) {
   return bcrypt.compare(password, hash);
 }
 
+async function isTokenValid(authString) {
+  const token = authString && authString.substring(7);
+  return await decodeToken(token);
+}
+
+async function decodeToken(token) {
+  const verifyToken = jwt.verify(token, secret, (err, decoded) => decoded);
+  return (verifyToken !== undefined ? verifyToken.id : false);
+}

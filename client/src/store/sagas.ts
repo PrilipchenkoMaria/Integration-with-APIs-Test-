@@ -6,7 +6,7 @@ import {
   SIGN_UP_FAIL,
   AUTH_SUCCESS,
   SIGN_IN,
-  SIGN_IN_FAIL,
+  SIGN_IN_FAIL, TOKEN_VERIFICATION,
 } from "./actionTypes";
 import { call, put, takeEvery } from "redux-saga/effects";
 import history from "../history";
@@ -40,7 +40,7 @@ function* fetchStripeUserID(action: Action) {
 function* fetchAuth(action: Action) {
   const user = action.payload;
   const userStringify = JSON.stringify(user);
-  let uri:string = "", failType:string = "";
+  let uri: string = "", failType: string = "";
   if (action.type === "SIGN_UP") {
     uri = "/api/auth/sign-up";
     failType = SIGN_UP_FAIL;
@@ -64,8 +64,28 @@ function* fetchAuth(action: Action) {
   }
 }
 
+function* tokenVerification() {
+  const { token } = localStorage;
+  if (!token) return;
+  const tokenVerificationStatus = yield call(() => fetch("/api/auth/token", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => res.status));
+  if (tokenVerificationStatus === 200) {
+    yield put({ type: AUTH_SUCCESS, payload: { token } });
+  } else {
+    localStorage.removeItem("token");
+    yield put({ type: SIGN_IN_FAIL });
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(STRIPE_SIGN_IN_VALIDATION, fetchStripeUserID);
   yield takeEvery(SIGN_UP, fetchAuth);
   yield takeEvery(SIGN_IN, fetchAuth);
+  yield takeEvery(TOKEN_VERIFICATION, tokenVerification);
 }

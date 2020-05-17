@@ -1,8 +1,15 @@
 const router = require("express").Router();
-const { checkUserByEmail, signToken, createUser, verifyUser } = require("../services/auth");
+const {
+  checkUserByEmail,
+  signToken,
+  createUser,
+  verifyUser,
+  isTokenValid
+} = require("../services/auth");
 
 router.post("/sign-up", signUp);
 router.post("/sign-in", signIn);
+router.get("/token", verifyToken);
 
 async function signUp(req, res) {
   const { username, email, password } = req.body;
@@ -49,6 +56,15 @@ async function signIn(req, res) {
     message: "Authentication successful!",
     token,
   });
+}
+
+async function verifyToken(req, res) {
+  const authString = req.headers.authorization;
+  const userId = await isTokenValid(authString);
+  if (!userId) {
+    return res.sendStatus(401)
+  }
+  return res.sendStatus(200);
 }
 
 module.exports = router;

@@ -28,3 +28,7 @@ export const signOutUser = () => {
     type: SIGN_OUT,
   };
 };
+
+export const isAuthenticated = () => ({
+  type: TOKEN_VERIFICATION,
+});

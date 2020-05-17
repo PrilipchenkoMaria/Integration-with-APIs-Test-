@@ -7,3 +7,4 @@ export const SIGN_IN_FAIL = "SIGN_IN_FAIL";
 export const SIGN_UP_FAIL = "SIGN_UP_FAIL";
 export const AUTH_SUCCESS = "AUTH_SUCCESS";
 export const SIGN_OUT = "SIGN_OUT";
+export const TOKEN_VERIFICATION = "TOKEN_VERIFICATION";

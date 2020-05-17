@@ -2,10 +2,24 @@ const { before, after, it } = require("mocha");
 require("../services/mongoose");
 const User = require("mongoose").model("User");
 const app = require("./app.test");
-const { createUser } = require("../services/auth");
+const { createUser, signToken } = require("../services/auth");
 
 
 describe("Security", () => {
+  let token;
+  before(async () => {
+    token = await signToken("test");
+  });
+  describe("Token verification", () => {
+    it("GET /api/auth/token, invalid", () => app
+      .request("GET", "/api/auth/token")
+      .set("Authorization", "Bearer dfsg")
+      .expect(401));
+    it("GET /api/auth/token, valid", () => app
+      .request("GET", "/api/auth/token")
+      .set("Authorization", `Bearer ${token}`)
+      .expect(200));
+  });
   describe("POST /api/auth/sign-up", () => {
     [
       [
