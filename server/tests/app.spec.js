@@ -1,8 +1,9 @@
 const { before, after, it } = require("mocha");
 require("../services/mongoose");
 const User = require("mongoose").model("User");
+const Product = require("mongoose").model("Product");
 const app = require("./app.test");
-const { createUser, signToken } = require("../services/auth");
+const { createUser, signToken } = require("../services/user");
 
 
 describe("Security", () => {
@@ -51,7 +52,7 @@ describe("Security", () => {
     });
   });
   before(async () => {
-    await createUser("test", "test@gmail.com", "test" );
+    await createUser("test", "test@gmail.com", "test");
   });
   describe("POST /api/auth/sign-in", () => {
     [
@@ -86,5 +87,29 @@ describe("Security", () => {
     after(async () => {
       await User.deleteOne({ email: "test@gmail.com" });
     });
+  });
+});
+
+describe("Product", () => {
+  [
+    [
+      "valid payload",
+      { name: "testtest", amount: 12 },
+      201,
+    ],
+    [
+      "invalid payload",
+      { email: "test@test.com" },
+      400,
+    ],
+
+  ].forEach(([caseName, payload, expectCode]) => it(caseName, () => app
+    .request("POST", "/api/product/createProduct")
+    .set("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlYzFiNTM2ZjM0MWFhMzIwZDYyNDN" +
+      "lYiIsImlhdCI6MTU4OTc1MzE0M30.RhcBnWya5HgMhzvlTtSDaTBvCrCXKs3kCeZO-iDxeJo")
+    .send(payload)
+    .expect(expectCode)));
+  after(async () => {
+    await Product.deleteOne({ name: "testtest" });
   });
 });

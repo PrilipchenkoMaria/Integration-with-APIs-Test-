@@ -4,7 +4,7 @@ const stripe = require("stripe")(stripeSK);
 const {
   saveStripeId,
   getIdByToken,
-} = require("../services/auth");
+} = require("../services/user");
 
 router.use("/oauth", stripeAuth);
 

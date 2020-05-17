@@ -6,11 +6,13 @@ require("express-async-errors");
 require("./services/mongoose");
 const auth = require("./controllers/auth");
 const connect = require("./controllers/connect");
+const product = require("./controllers/product");
 const app = express();
 app.use(bodyParser.json());
 
 app.use("/api/auth/", auth);
 app.use("/api/connect", connect);
+app.use("/api/product", product);
 
 app.use((err, req, res, next) => {
   if (err.message) {

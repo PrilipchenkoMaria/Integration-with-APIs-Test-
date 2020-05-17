@@ -5,7 +5,7 @@ const {
   createUser,
   verifyUser,
   getIdByToken,
-} = require("../services/auth");
+} = require("../services/user");
 
 router.post("/sign-up", signUp);
 router.post("/sign-in", signIn);

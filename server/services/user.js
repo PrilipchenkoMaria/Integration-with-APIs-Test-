@@ -10,6 +10,7 @@ module.exports = {
   verifyUser,
   getIdByToken,
   saveStripeId,
+  getStripeIdById,
 };
 
 async function checkUserByEmail(email) {
@@ -38,6 +39,11 @@ async function verifyUser(email, password) {
 
 async function saveStripeId(stripe_user_id, userId) {
   return await User.updateOne({ _id: userId }, { stripe_account: stripe_user_id });
+}
+
+async function getStripeIdById(userId) {
+  const user = await User.findOne({ _id: userId });
+  return user.stripe_account;
 }
 
 async function signToken(id) {
