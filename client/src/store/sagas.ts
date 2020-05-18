@@ -11,6 +11,9 @@ import {
   GET_PRODUCTS,
   GET_PRODUCTS_FAIL,
   GET_PRODUCTS_SUCCESS,
+  CREATE_PRODUCT,
+  CREATE_PRODUCT_SUCCESS,
+  CREATE_PRODUCT_FAIL,
 } from "./actionTypes";
 import { call, put, takeEvery } from "redux-saga/effects";
 import history from "../history";
@@ -94,10 +97,29 @@ function* fetchProducts() {
   } else yield put({ type: GET_PRODUCTS_FAIL });
 }
 
+function* addProduct(action: Action) {
+  const { token } = localStorage;
+  const product = action.payload;
+  const productStringify = JSON.stringify(product);
+  const creationStatus = yield call(() => fetch("/api/product/create-product", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: productStringify,
+  })
+    .then((res) => res.status));
+  if (creationStatus === 201) {
+    yield put({ type: CREATE_PRODUCT_SUCCESS, payload: { token } });
+  } else yield put({ type: CREATE_PRODUCT_FAIL });
+}
+
 export default function* rootSaga() {
   yield takeEvery(STRIPE_SIGN_IN_VALIDATION, fetchStripeUserID);
   yield takeEvery(SIGN_UP, fetchAuth);
   yield takeEvery(SIGN_IN, fetchAuth);
   yield takeEvery(TOKEN_VERIFICATION, tokenVerification);
   yield takeEvery(GET_PRODUCTS, fetchProducts);
+  yield takeEvery(CREATE_PRODUCT, addProduct);
 }

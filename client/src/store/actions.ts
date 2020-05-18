@@ -5,6 +5,7 @@ import {
   STRIPE_SIGN_IN_VALIDATION,
   TOKEN_VERIFICATION,
   GET_PRODUCTS,
+  CREATE_PRODUCT,
 } from "./actionTypes";
 import history from "../history";
 
@@ -36,4 +37,9 @@ export const isAuthenticated = () => ({
 
 export const getProducts = () => ({
   type: GET_PRODUCTS,
+});
+
+export const createProduct = (product: object) => ({
+  type: CREATE_PRODUCT,
+  payload: product,
 });
