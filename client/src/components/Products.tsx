@@ -46,7 +46,7 @@ const Products = connect((state: AppStore) => ({
       return <Card
         style={{ width: "250px", flex: "inherit" }}
         className="text-center"
-        key={product.stripe_account}
+        key={product._id}
       >
         <Card.Body>
           <Card.Title>{product.name}</Card.Title>

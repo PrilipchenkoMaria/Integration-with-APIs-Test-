@@ -42,7 +42,7 @@ const products = (state = initialState, action: Action) => {
 };
 
 export interface ProductsStore {
-  products?: { amount: number, name: string, stripe_account: string }[]
+  products?: { amount: number, name: string, _id: string }[]
   isFetching: boolean,
 }
 
