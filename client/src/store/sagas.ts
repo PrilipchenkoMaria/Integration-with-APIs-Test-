@@ -14,6 +14,9 @@ import {
   CREATE_PRODUCT,
   CREATE_PRODUCT_SUCCESS,
   CREATE_PRODUCT_FAIL,
+  CREATE_PAYMENT_INTENT,
+  CREATE_PAYMENT_INTENT_SUCCESS,
+  CREATE_PAYMENT_INTENT_FAIL,
 } from "./actionTypes";
 import { call, put, takeEvery } from "redux-saga/effects";
 import history from "../history";
@@ -115,6 +118,23 @@ function* addProduct(action: Action) {
   } else yield put({ type: CREATE_PRODUCT_FAIL });
 }
 
+function* addPaymentIntent(action: Action) {
+  const product = action.payload;
+  let selectedProduct = Object.assign({}, product);
+  selectedProduct.amount *= 100;
+  const productStringify = JSON.stringify(selectedProduct);
+  const creationResponse = yield call(() => fetch("/api/connect/payment-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: productStringify,
+  })
+    .then((res) => res.json()));
+  if (creationResponse.clientSecret) {
+    history.push("/connect/confirm-payment/");
+    yield put({ type: CREATE_PAYMENT_INTENT_SUCCESS, payload: { clientSecret: creationResponse.clientSecret } });
+  } else yield put({ type: CREATE_PAYMENT_INTENT_FAIL });
+}
+
 export default function* rootSaga() {
   yield takeEvery(STRIPE_SIGN_IN_VALIDATION, fetchStripeUserID);
   yield takeEvery(SIGN_UP, fetchAuth);
@@ -122,4 +142,5 @@ export default function* rootSaga() {
   yield takeEvery(TOKEN_VERIFICATION, tokenVerification);
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(CREATE_PRODUCT, addProduct);
+  yield takeEvery(CREATE_PAYMENT_INTENT, addPaymentIntent);
 }

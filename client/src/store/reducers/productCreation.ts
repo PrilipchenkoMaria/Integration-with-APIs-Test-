@@ -34,7 +34,7 @@ const productCreation = (state = initialState, action: Action) => {
       return {
         ...state,
         IsFetching: false,
-        errorMessage: true,
+        error: true,
       };
     }
     default: {

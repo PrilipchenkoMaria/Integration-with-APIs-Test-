@@ -7,6 +7,7 @@ import { AppStore } from "../store";
 import { AuthStore } from "../store/reducers/auth";
 import { stripeConnect } from "../config";
 
+
 interface StripeConnectionProps extends AuthStore {
   stripeSignInValidation: (query: string) => any;
   location: any;

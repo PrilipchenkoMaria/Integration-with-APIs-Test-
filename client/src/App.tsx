@@ -9,6 +9,7 @@ import SignUp from "./components/SignUp";
 import StripeConnectionResponse from "./components/StripeConnectionResponse";
 import { isAuthenticated } from "./store/actions";
 import { connect } from "react-redux";
+import InjectedCheckoutForm from "./components/CheckoutForm";
 
 interface AppProps {
   isAuthenticated: () => void;
@@ -31,6 +32,7 @@ const App = connect(null, {
             <Route path="/sign-up" component={SignUp}/>
             <Route path="/create-product" component={CreateProduct}/>
             <Route path="/connect/oauth/" component={StripeConnectionResponse}/>
+            <Route path="/connect/confirm-payment/" component={InjectedCheckoutForm}/>
             <Route path="/" component={Products}/>
           </Switch>
         </div>

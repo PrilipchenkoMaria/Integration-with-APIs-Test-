@@ -69,6 +69,8 @@ const CreateProduct = connect((state: AppStore) => ({
             <Form.Label>Price</Form.Label>
             <Form.Control
               type="number"
+              min="1"
+              max="999999"
               placeholder="Enter product price"
               onChange={this.handleInputChange}
               name="amount"

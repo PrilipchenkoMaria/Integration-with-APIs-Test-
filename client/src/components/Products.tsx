@@ -3,18 +3,23 @@ import { Card, Button, CardDeck, Container, Spinner } from "react-bootstrap";
 import { ProductsStore } from "../store/reducers/products";
 import { connect } from "react-redux";
 import { AppStore } from "../store";
-import { getProducts } from "../store/actions";
+import { getProducts, createPaymentIntent } from "../store/actions";
+import { PaymentIntentStore } from "../store/reducers/paymentIntent";
 
-interface ProductsProps extends ProductsStore {
+interface ProductsProps extends ProductsStore, PaymentIntentStore {
   getProducts: () => void;
+  createPaymentIntent: (product: object) => void;
 }
 
 const Products = connect((state: AppStore) => ({
   products: state.products.products,
   isFetching: state.products.isFetching,
+  intentIsFetching: state.paymentIntent.intentIsFetching,
 }), {
   getProducts,
+  createPaymentIntent,
 })(class extends React.Component <ProductsProps, any> {
+
   componentDidMount() {
     const {
       products,
@@ -26,18 +31,26 @@ const Products = connect((state: AppStore) => ({
     }
   }
 
+
+  handleSubmit(event: { preventDefault: () => void; }, product: object) {
+    event.preventDefault();
+    this.props.createPaymentIntent(product);
+  }
+
   render() {
-    if (this.props.isFetching) return (
+    if (this.props.isFetching || this.props.intentIsFetching) return (
       <div className="d-flex justify-content-center">
         <Spinner animation="border" variant="primary"/>
       </div>
     );
     return (
-      <Container fluid>
-        <CardDeck>
-          {this.renderProducts()}
-        </CardDeck>
-      </Container>
+      <div>
+        <Container fluid>
+          <CardDeck>
+            {this.renderProducts()}
+          </CardDeck>
+        </Container>
+      </div>
     );
   }
 
@@ -51,7 +64,10 @@ const Products = connect((state: AppStore) => ({
         <Card.Body>
           <Card.Title>{product.name}</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{product.amount}$</Card.Subtitle>
-          <Button variant="primary">Buy</Button>
+          <Button
+            variant="primary"
+            onClick={(event: { preventDefault: () => void; }) => this.handleSubmit(event, product)}
+          >Buy</Button>
         </Card.Body>
       </Card>;
     });

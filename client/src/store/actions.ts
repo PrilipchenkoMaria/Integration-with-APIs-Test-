@@ -5,7 +5,7 @@ import {
   STRIPE_SIGN_IN_VALIDATION,
   TOKEN_VERIFICATION,
   GET_PRODUCTS,
-  CREATE_PRODUCT,
+  CREATE_PRODUCT, CREATE_PAYMENT_INTENT,
 } from "./actionTypes";
 import history from "../history";
 
@@ -41,5 +41,10 @@ export const getProducts = () => ({
 
 export const createProduct = (product: object) => ({
   type: CREATE_PRODUCT,
+  payload: product,
+});
+
+export const createPaymentIntent = (product: object) => ({
+  type: CREATE_PAYMENT_INTENT,
   payload: product,
 });
