@@ -118,3 +118,24 @@ describe("Product", () => {
     .expect("Content-Type", /json/)
     .then((res) => res.body.should.be.an("array")));
 });
+
+describe("Stripe", () => {
+  describe("Payment intent", () => {
+    [
+      [
+        "valid payload",
+        { _id: "5ec1e2cf9129a73589826f23", amount: 3000 },
+        200,
+      ],
+      [
+        "invalid payload",
+        { amount: "test@test.com" },
+        400,
+      ],
+
+    ].forEach(([caseName, payload, expectCode]) => it(caseName, () => app
+      .request("POST", "/api/connect/payment-intent")
+      .send(payload)
+      .expect(expectCode)));
+  });
+});

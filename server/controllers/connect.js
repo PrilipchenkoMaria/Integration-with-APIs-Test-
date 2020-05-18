@@ -5,8 +5,10 @@ const {
   saveStripeId,
   getIdByToken,
 } = require("../services/user");
+const { findStripeAccById } = require("../services/product");
 
 router.use("/oauth", stripeAuth);
+router.use("/payment-intent", paymentIntent);
 
 async function stripeAuth(req, res) {
   const { code } = req.query;
@@ -29,6 +31,25 @@ async function stripeAuth(req, res) {
       }
     },
   );
+}
+
+async function paymentIntent(req, res) {
+  const { _id, amount } = req.body;
+  if (!_id || !amount) return res.status(400).json();
+  const destination = await findStripeAccById(_id);
+  const clientSecret = await stripe.paymentIntents.create({
+    payment_method_types: ["card"],
+    amount,
+    currency: "usd",
+    transfer_data: {
+      destination,
+    },
+  }).then((res) => res.client_secret);
+  if (clientSecret) {
+    return res.status(200).json({
+      clientSecret,
+    });
+  }
 }
 
 module.exports = router;
