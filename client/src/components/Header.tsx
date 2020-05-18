@@ -8,13 +8,13 @@ import { signOutUser } from "../store/actions";
 
 
 export interface HeaderProps {
-  token?: string,
+  isAuthenticated: boolean,
   stripeConnected: boolean,
   signOutUser: () => void,
 }
 
 const Header = connect((state: AppStore) => ({
-  token: state.auth.token,
+  isAuthenticated: state.auth.isAuthenticated,
   stripeConnected: state.auth.stripeConnected,
 }), {
   signOutUser,
@@ -25,12 +25,12 @@ const Header = connect((state: AppStore) => ({
   }
 
   authButtons() {
-    if (this.props.token) {
+    if (this.props.isAuthenticated) {
       return <Nav.Item as="li">
         <Link to="/" className="nav-link" onClick={() => this.onClickSignOut()}>Sign out</Link>
       </Nav.Item>;
     }
-    return <><Nav.Item as="li">
+    if (!this.props.isAuthenticated) return <><Nav.Item as="li">
       <Link to="/sign-in" className="nav-link">Sign in</Link>
     </Nav.Item>
       <Nav.Item as="li">
@@ -39,10 +39,11 @@ const Header = connect((state: AppStore) => ({
   }
 
   stripeButtons() {
-    if (this.props.token) return <Nav.Item as="li">
+    const { isAuthenticated, stripeConnected } = this.props;
+    if (isAuthenticated && !stripeConnected) return <Nav.Item as="li">
       <Nav.Link href={stripeConnect}>Connect to my Stripe</Nav.Link>
     </Nav.Item>;
-    if (this.props.stripeConnected) {
+    if (stripeConnected && isAuthenticated) {
       return <><Nav.Item as="li">
         <Link to="/create-product" className="nav-link">Create product</Link>
       </Nav.Item>

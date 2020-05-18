@@ -16,6 +16,7 @@ const initialState = {
   signUpErrorMessage: null,
   signInIsFetching: false,
   signInErrorMessage: null,
+  isAuthenticated: false,
   token: localStorage.getItem("token"),
 };
 
@@ -66,6 +67,8 @@ const auth = (state = initialState, action: Action) => {
       return {
         ...state,
         signUpIsFetching: false,
+        signInIsFetching: false,
+        isAuthenticated: true,
       };
     }
     case SIGN_UP_FAIL: {
@@ -87,7 +90,7 @@ const auth = (state = initialState, action: Action) => {
       return {
         ...state,
         token: null,
-        isFetching: false,
+        isAuthenticated: false,
       };
     }
     default: {
@@ -104,6 +107,7 @@ export interface AuthStore {
   signUpErrorMessage?: string,
   signInIsFetching: boolean,
   signInErrorMessage?: string,
+  isAuthenticated: boolean,
   token?: string,
 }
 
