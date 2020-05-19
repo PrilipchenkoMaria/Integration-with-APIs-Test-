@@ -1,7 +1,6 @@
 const bodyParser = require("body-parser");
 const express = require("express");
-const { stripeSK } = require("./config");
-const stripe = require("stripe")(stripeSK);
+const { resolve } = require("path");
 require("express-async-errors");
 require("./services/mongoose");
 const auth = require("./controllers/auth");
@@ -14,6 +13,11 @@ app.use("/api/auth/", auth);
 app.use("/api/connect", connect);
 app.use("/api/product", product);
 
+app.use("/", express.static(resolve(__dirname, "../client/build")));
+app.get("*", (req, res) => {
+  res.sendFile(resolve(__dirname, "../client/build/index.html"));
+});
+
 app.use((err, req, res, next) => {
   if (err.message) {
     res.status(500).json({
@@ -23,8 +27,9 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-app.run = () => app.listen(3001, () => {
-  console.info("Server is running");
+const { PORT = 3001 } = process.env;
+app.run = () => app.listen(PORT, () => {
+  console.info("Server is running", PORT);
 });
 
 module.exports = app;

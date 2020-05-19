@@ -1,8 +1,6 @@
 {
   "scripts": {
-    "start": "run-p -nl start:**",
-    "start:server": "cd server && npm start",
-    "start:client": "cd client && npm start",
+    "start": "cd server && npm start",
     "install": "run-p -nl install:**",
     "install:server": "cd server && npm install",
     "install:client": "cd client && npm install"
